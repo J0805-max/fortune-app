@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>今日运势</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+</head>
+<body>
+  <div id="app">
+
+    <div class="phone-screen">
+
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <span id="timeDisplay">7:30</span>
+        <span>📶 🔋</span>
+      </div>
+
+      <!-- ====== 今日页面 ====== -->
+      <div class="page active" id="page-today">
+
+        <div class="header-section">
+          <div class="date-main" id="todayDate">加载中...</div>
+          <div class="date-sub" id="lunarDate"></div>
+          <div class="zodiac" id="zodiacLabel">⚖️ 天秤座 · LIBRA</div>
+        </div>
+
+        <div class="overview-card">
+          <div class="label">✨ 今日总评</div>
+          <p id="overviewText">加载中...</p>
+        </div>
+
+        <div class="card-group">
+          <div class="fortune-card love">
+            <div class="icon-wrap">💕</div>
+            <div class="text">
+              <div class="label">爱情</div>
+              <div class="desc" id="loveText">加载中...</div>
+            </div>
+          </div>
+          <div class="fortune-card money">
+            <div class="icon-wrap">💰</div>
+            <div class="text">
+              <div class="label">财运</div>
+              <div class="desc" id="moneyText">加载中...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="almanac">
+          <div class="almanac-item good">
+            <div class="label">✅ 宜</div>
+            <div class="content" id="yiText">加载中...</div>
+          </div>
+          <div class="almanac-item bad">
+            <div class="label">❌ 忌</div>
+            <div class="content" id="jiText">加载中...</div>
+          </div>
+          <div class="almanac-item">
+            <div class="label">🐯 冲煞</div>
+            <div class="content" id="chongText">加载中...</div>
+          </div>
+        </div>
+
+        <div class="lucky-strip">
+          <div class="lucky-item">
+            <div class="label">🍀 幸运数字</div>
+            <div class="value" id="luckyNum">-</div>
+          </div>
+          <div class="lucky-item">
+            <div class="label">🎨 幸运颜色</div>
+            <div class="value" id="luckyColor">-</div>
+          </div>
+          <div class="lucky-item">
+            <div class="label">⏰ 吉时</div>
+            <div class="value" id="goodHour">-</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====== 过去一周页面 ====== -->
+      <div class="page" id="page-week">
+
+        <div class="page-title">📅 过去一周</div>
+
+        <div class="week-summary">
+          <div class="label">📊 本周整体</div>
+          <p id="weekSummary">加载中...</p>
+        </div>
+
+        <div id="weekList"></div>
+
+      </div>
+
+      <!-- ====== 设置页面 ====== -->
+      <div class="page" id="page-settings">
+
+        <div class="page-title">⚙️ 设置</div>
+
+        <div class="setting-group">
+          <div class="group-title">推送设置</div>
+          <div class="setting-item">
+            <div class="left">
+              <div class="icon-text">🔔</div>
+              <div class="info">
+                <div class="name">每日推送</div>
+                <div class="hint">每天早上自动推送运势</div>
+              </div>
+            </div>
+            <div class="toggle on" id="pushToggle"><div class="knob"></div></div>
+          </div>
+          <div class="setting-item">
+            <div class="left">
+              <div class="icon-text">⏰</div>
+              <div class="info">
+                <div class="name">推送时间</div>
+                <div class="hint">设置每天推送的时间</div>
+              </div>
+            </div>
+            <div class="right" id="pushTimeDisplay">7:30 ▸</div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="group-title">内容设置</div>
+          <div class="setting-item">
+            <div class="left">
+              <div class="icon-text">⚖️</div>
+              <div class="info">
+                <div class="name">我的星座</div>
+                <div class="hint">切换查看运势的星座</div>
+              </div>
+            </div>
+            <div class="right" id="zodiacSetting">天秤座 ▸</div>
+          </div>
+          <div class="setting-item">
+            <div class="left">
+              <div class="icon-text">📅</div>
+              <div class="info">
+                <div class="name">显示农历</div>
+                <div class="hint">在首页显示农历日期</div>
+              </div>
+            </div>
+            <div class="toggle on" id="lunarToggle"><div class="knob"></div></div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="group-title">其他</div>
+          <div class="setting-item" id="dataSourceItem">
+            <div class="left">
+              <div class="icon-text">🌐</div>
+              <div class="info">
+                <div class="name">数据来源</div>
+                <div class="hint">查看运势数据来源</div>
+              </div>
+            </div>
+            <div class="right">▸</div>
+          </div>
+          <div class="setting-item">
+            <div class="left">
+              <div class="icon-text">ℹ️</div>
+              <div class="info">
+                <div class="name">关于</div>
+                <div class="hint">版本 1.0.0</div>
+              </div>
+            </div>
+            <div class="right">▸</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====== 底部导航 ====== -->
+      <div class="nav-bar">
+        <div class="nav-item active" data-page="today">📖 今日</div>
+        <div class="nav-item" data-page="week">📅 过去一周</div>
+        <div class="nav-item" data-page="settings">⚙️ 设置</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/js/data.js"></script>
+  <script src="/js/notification.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
