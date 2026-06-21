@@ -239,3 +239,4 @@ function setText(id, text) {
 document.addEventListener("DOMContentLoaded", function () {
   App.init();
 });
+
