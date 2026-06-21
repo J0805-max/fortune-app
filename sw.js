@@ -1,12 +1,12 @@
 ﻿const CACHE_NAME = "fortune-cache-v1";
 const FILES_TO_CACHE = [
   "/",
-  "/index.html",
-  "/css/style.css",
-  "/js/app.js",
-  "/js/data.js",
-  "/js/notification.js",
-  "/manifest.json"
+  "index.html",
+  "css/style.css",
+  "js/app.js",
+  "js/data.js",
+  "js/notification.js",
+  "manifest.json"
 ];
 
 self.addEventListener("install", (event) => {
@@ -38,8 +38,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(title, {
       body: body,
-      icon: "/icons/icon-192.png",
-      badge: "/icons/icon-192.png",
+      icon: "icons/icon-192.png",
+      badge: "icons/icon-192.png",
       vibrate: [200, 100, 200]
     })
   );
@@ -47,5 +47,6 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  event.waitUntil(clients.openWindow("/"));
+  event.waitUntil(clients.openWindow("./"));
 });
+
