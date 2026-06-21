@@ -162,16 +162,19 @@ var data = {
   pushEnabled: true,
   pushTime: "7:30",
   showLunar: true,
-  fortune: {
-    overall: "今天天秤座社交能量满满，适合与人合作或参加聚会，有机会遇到贵人",
-    love: "单身者魅力四射，容易吸引到欣赏你的人",
-    money: "开销较多，注意控制冲动消费",
-    luckyNum: "3, 7, 12",
-    luckyColor: "金色",
-    goodHour: "09:00 - 11:00",
-    yi: "嫁娶 · 开市 · 出行 · 会友",
-    ji: "安葬 · 动土 · 祈福",
-    chong: "冲虎 · 煞南"
+  allFortune: {
+    "白羊座": {overall:"今天白羊座精力充沛，适合主动出击迎接新挑战",love:"主动表达心意容易获得回应",money:"偏财运不错，有小惊喜",luckyNum:"5, 9, 18",luckyColor:"红色",goodHour:"10:00 - 12:00",yi:"签约 · 出行 · 健身",ji:"冲动消费 · 争吵",chong:"冲猴 · 煞北"},
+    "金牛座": {overall:"今天金牛座适合稳扎稳打，不宜冒进",love:"感情稳定，适合和伴侣一起做些轻松的事",money:"理财运不错，适合做财务规划",luckyNum:"2, 6, 15",luckyColor:"绿色",goodHour:"14:00 - 16:00",yi:"理财 · 学习 · 整理",ji:"投资 · 远行",chong:"冲鸡 · 煞西"},
+    "双子座": {overall:"今天双子座思维活跃，适合沟通交流和头脑风暴",love:"社交场合魅力十足，容易吸引目光",money:"有意外之财，但不宜大手大脚",luckyNum:"4, 8, 21",luckyColor:"黄色",goodHour:"09:00 - 11:00",yi:"社交 · 学习 · 创意",ji:"冲动决定 · 熬夜",chong:"冲狗 · 煞南"},
+    "巨蟹座": {overall:"今天巨蟹座情绪敏感，适合在家休息放松",love:"适合和家人或伴侣共度温馨时光",money:"消费欲望较强，注意控制预算",luckyNum:"3, 7, 11",luckyColor:"白色",goodHour:"19:00 - 21:00",yi:"居家 · 烹饪 · 陪伴",ji:"投资 · 社交",chong:"冲猪 · 煞东"},
+    "狮子座": {overall:"今天狮子座自信满满，适合展现自己的才华",love:"魅力爆棚，容易吸引到欣赏的目光",money:"事业运带动财运，有升职加薪机会",luckyNum:"1, 5, 19",luckyColor:"金色",goodHour:"11:00 - 13:00",yi:"演讲 · 展示 · 社交",ji:"低调行事 · 妥协",chong:"冲鼠 · 煞北"},
+    "处女座": {overall:"今天处女座适合处理细节工作，效率很高",love:"对感情要求较高，适当放松会更愉快",money:"适合整理账目，做好财务规划",luckyNum:"6, 10, 22",luckyColor:"蓝色",goodHour:"15:00 - 17:00",yi:"整理 · 分析 · 健康",ji:"冲动购物 · 熬夜",chong:"冲牛 · 煞西"},
+    "天秤座": {overall:"今天天秤座社交能量满满，适合与人合作或参加聚会，有机会遇到贵人",love:"单身者魅力四射，容易吸引到欣赏你的人",money:"开销较多，注意控制冲动消费",luckyNum:"3, 7, 12",luckyColor:"金色",goodHour:"09:00 - 11:00",yi:"嫁娶 · 开市 · 出行 · 会友",ji:"安葬 · 动土 · 祈福",chong:"冲虎 · 煞南"},
+    "天蝎座": {overall:"今天天蝎座洞察力敏锐，适合深入思考和解决问题",love:"感情深刻，适合和伴侣进行深度交流",money:"投资运不错，可以关注长期理财",luckyNum:"8, 13, 20",luckyColor:"紫色",goodHour:"16:00 - 18:00",yi:"研究 · 投资 · 思考",ji:"轻信他人 · 冲动",chong:"冲兔 · 煞东"},
+    "射手座": {overall:"今天射手座自由奔放，适合外出探索新鲜事物",love:"桃花运不错，有机会遇到有趣的人",money:"偏财运佳，但容易来得快去得也快",luckyNum:"9, 14, 23",luckyColor:"橙色",goodHour:"13:00 - 15:00",yi:"旅行 · 运动 · 社交",ji:"宅家 · 拖延",chong:"冲龙 · 煞南"},
+    "摩羯座": {overall:"今天摩羯座务实高效，适合推进工作计划",love:"感情稳定务实，行动比语言更有说服力",money:"正财运好，努力工作就有回报",luckyNum:"4, 11, 17",luckyColor:"深蓝",goodHour:"10:00 - 12:00",yi:"工作 · 签约 · 学习",ji:"冲动消费 · 熬夜",chong:"冲蛇 · 煞西"},
+    "水瓶座": {overall:"今天水瓶座创意十足，适合做一些与众不同的事情",love:"独特的魅力吸引人，保持做自己就好",money:"适合尝试新的赚钱方式",luckyNum:"7, 12, 25",luckyColor:"天蓝",goodHour:"20:00 - 22:00",yi:"创新 · 社交 · 学习",ji:"墨守成规 · 压抑",chong:"冲马 · 煞北"},
+    "双鱼座": {overall:"今天双鱼座感性浪漫，适合做创意和艺术相关的事",love:"浪漫指数爆棚，适合约会或表白",money:"容易为感性消费，注意理性购物",luckyNum:"2, 9, 16",luckyColor:"粉色",goodHour:"18:00 - 20:00",yi:"创作 · 约会 · 冥想",ji:"重大决策 · 冲动",chong:"冲羊 · 煞东"}
   }
 };
 
@@ -190,15 +193,16 @@ function showToday() {
   g("todayDate").innerHTML = d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日 "+w[d.getDay()];
   if (data.showLunar) g("lunarDate").innerHTML = "农历五月初八";
   g("zodiacLabel").innerHTML = "⚖️ "+data.zodiac+" · "+data.zodiacEn[data.zodiac];
-  g("overviewText").innerHTML = data.fortune.overall;
-  g("loveText").innerHTML = data.fortune.love;
-  g("moneyText").innerHTML = data.fortune.money;
-  g("luckyNum").innerHTML = data.fortune.luckyNum;
-  g("luckyColor").innerHTML = data.fortune.luckyColor;
-  g("goodHour").innerHTML = data.fortune.goodHour;
-  g("yiText").innerHTML = data.fortune.yi;
-  g("jiText").innerHTML = data.fortune.ji;
-  g("chongText").innerHTML = data.fortune.chong;
+  var fd = data.allFortune[data.zodiac];
+  g("overviewText").innerHTML = fd.overall;
+  g("loveText").innerHTML = fd.love;
+  g("moneyText").innerHTML = fd.money;
+  g("luckyNum").innerHTML = fd.luckyNum;
+  g("luckyColor").innerHTML = fd.luckyColor;
+  g("goodHour").innerHTML = fd.goodHour;
+  g("yiText").innerHTML = fd.yi;
+  g("jiText").innerHTML = fd.ji;
+  g("chongText").innerHTML = fd.chong;
 }
 
 function showWeek() {
@@ -220,7 +224,7 @@ function showWeek() {
     html += '<div class="day-card'+(today?" today":"")+'"><div class="dayname"><div class="weekday">'+(today?"今天":w[d2.getDay()])+'</div><div class="date-num">'+(d2.getMonth()+1)+"/"+d2.getDate()+'</div></div><div class="summary">'+list[i][0]+'</div><div class="trend">'+list[i][1]+'</div></div>';
   }
   g("weekList").innerHTML = html;
-  g("weekSummary").innerHTML = "这周社交运不错，财运稍有波动，周末运势回升";
+  g("weekSummary").innerHTML = "过去一周" + data.zodiac + "整体运势平稳，注意把握社交机会";
 }
 
 function switchPage(p) {
