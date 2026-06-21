@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 今日运势 - 推送通知模块
  * 使用 Service Worker + Notification API
  */
