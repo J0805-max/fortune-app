@@ -71,7 +71,15 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .nav-item{color:#a8c8a8;font-size:12px;text-align:center;letter-spacing:1px;cursor:pointer;padding:4px 12px;user-select:none;transition:color .2s}
 .nav-item.active{color:#3d6b3d;font-weight:600}
 @media(min-width:768px){body{padding:40px}}
-</style>
+.picker-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);display:flex;align-items:flex-end;justify-content:center;z-index:999}
+.picker-panel{background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 30px;width:100%;max-width:420px;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.picker-title{text-align:center;font-size:16px;font-weight:600;color:#2d4a2d;margin-bottom:16px}
+.picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.picker-item{background:#f6faf6;border:1px solid rgba(91,140,91,0.15);border-radius:12px;padding:14px 8px;text-align:center;font-size:14px;color:#333;cursor:pointer;transition:all .2s}
+.picker-item:active{background:#e8f0e8;border-color:#5b8c5b}
+.picker-item.active{background:#5b8c5b;color:#fff;border-color:#5b8c5b}
+.picker-close{text-align:center;color:#8aa88a;font-size:14px;padding:12px;cursor:pointer}.picker-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);display:flex;align-items:flex-end;justify-content:center;z-index:999}.picker-panel{background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 30px;width:100%;max-width:420px;animation:slideUp .25s ease}@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}.picker-title{text-align:center;font-size:16px;font-weight:600;color:#2d4a2d;margin-bottom:16px}.picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.picker-item{background:#f6faf6;border:1px solid rgba(91,140,91,0.15);border-radius:12px;padding:14px 8px;text-align:center;font-size:14px;color:#333;cursor:pointer;transition:all .2s}.picker-item:active{background:#e8f0e8;border-color:#5b8c5b}.picker-item.active{background:#5b8c5b;color:#fff;border-color:#5b8c5b}.picker-close{text-align:center;color:#8aa88a;font-size:14px;padding:12px;cursor:pointer}</style>
 </head><body>
 <div id="app"><div class="phone-screen">
 
@@ -282,15 +290,43 @@ function init() {
   };
 
   g("zodiacSetting").onclick = function(){
-    var idx = data.zodiacList.indexOf(data.zodiac);
-    data.zodiac = data.zodiacList[(idx+1) % data.zodiacList.length];
-    this.innerHTML = data.zodiac+" ▸";
-    saveSet();
-    showToday();
+    openPicker();
   };
 
   g("dataSourceItem").onclick = function(){
     alert("📡 数据来源\n\n所有数据来自公开免费 API：\n1. 天行数据 (tianapi.com)\n2. 香港天文台 (hko.gov.hk)\n\n可在对应网站查证数据真实性");
+  };
+  
+  // 星座选择器
+  function openPicker() {
+    var p = g("zodiacPicker");
+    var grid = g("pickerGrid");
+    var html = "";
+    for (var i=0; i<data.zodiacList.length; i++) {
+      var z = data.zodiacList[i];
+      var active = (z === data.zodiac) ? ' active' : '';
+      html += '<div class="picker-item'+active+'" data-zodiac="'+z+'">'+z+'</div>';
+    }
+    grid.innerHTML = html;
+    p.style.display = "flex";
+    
+    var items = grid.querySelectorAll(".picker-item");
+    for (var i=0; i<items.length; i++) {
+      items[i].onclick = function(){
+        data.zodiac = this.getAttribute("data-zodiac");
+        g("zodiacSetting").innerHTML = data.zodiac+" ▸";
+        g("zodiacPicker").style.display = "none";
+        saveSet();
+        showToday();
+      };
+    }
+  }
+  
+  g("pickerClose").onclick = function(){
+    g("zodiacPicker").style.display = "none";
+  };
+  g("zodiacPicker").onclick = function(e){
+    if (e.target === this) this.style.display = "none";
   };
 }
 
