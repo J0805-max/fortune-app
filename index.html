@@ -15,8 +15,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 #app{width:100%;max-width:420px}
 .phone-screen{background:linear-gradient(180deg,#f6faf6,#edf3ed);border-radius:30px;padding:35px 20px 20px;min-height:700px;box-shadow:0 20px 60px rgba(60,100,60,0.08)}
 .status-bar{display:flex;justify-content:space-between;color:#8aa88a;font-size:12px;padding:0 4px 15px}
-.page{display:none}
-.page.active{display:block}
+.page{display:none}.page.active{display:block}
 .header-section{text-align:center;margin-bottom:20px}
 .date-main{font-size:17px;font-weight:600;color:#2d4a2d;letter-spacing:.5px}
 .date-sub{color:#8aa88a;font-size:12px;margin-top:4px}
@@ -76,11 +75,14 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 .picker-item{background:#f6faf6;border:2px solid #e0ece0;border-radius:14px;padding:16px 6px;text-align:center;font-size:15px;color:#333;cursor:pointer}
 .picker-item.sel{background:#5b8c5b;border-color:#5b8c5b;color:#fff}
-.picker-cancel{display:block;text-align:center;color:#8aa88a;font-size:15px;padding:12px;cursor:pointer;border-top:1px solid #e0ece0}.time-scroll-wrap{max-height:300px;overflow-y:auto;margin-bottom:16px;-webkit-overflow-scrolling:touch}.time-list{display:flex;flex-direction:column;gap:4px}.time-option{padding:14px 20px;text-align:center;font-size:16px;color:#333;border-radius:10px;cursor:pointer;transition:all .1s}.time-option:hover{background:#f0f5f0}.time-option.sel{background:#5b8c5b;color:#fff;font-weight:600}.time-option:active{background:#e0ece0}
+.time-scroll{max-height:280px;overflow-y:auto;margin-bottom:16px;-webkit-overflow-scrolling:touch}
+.time-opt{padding:14px 20px;text-align:center;font-size:16px;color:#333;cursor:pointer;border-radius:8px}
+.time-opt.sel{background:#5b8c5b;color:#fff;font-weight:600}
+.picker-cancel{display:block;text-align:center;color:#8aa88a;font-size:15px;padding:12px;cursor:pointer;border-top:1px solid #e0ece0}
 </style>
 </head><body>
-<div id="app"><div class="phone-screen">
 
+<div id="app"><div class="phone-screen">
 <div class="status-bar"><span id="timeDisplay"></span><span>📶 🔋</span></div>
 
 <div class="page active" id="page-today">
@@ -166,35 +168,41 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
   </div>
 </div>
 
-<script>
-var zList = ["白羊座","金牛座","双子座","巨蟹座","狮子座","处女座","天秤座","天蝎座","射手座","摩羯座","水瓶座","双鱼座"];
-var zEn = {白羊座:"ARIES",金牛座:"TAURUS",双子座:"GEMINI",巨蟹座:"CANCER",狮子座:"LEO",处女座:"VIRGO",天秤座:"LIBRA",天蝎座:"SCORPIUS",射手座:"SAGITTARIUS",摩羯座:"CAPRICORN",水瓶座:"AQUARIUS",双鱼座:"PISCES"};
-var myZodiac = "天秤座";
-var pushOn = true;
-var pushTime = "7:30";
-var showLunar = true;
-var pickerOpen = false;
+<!-- 时间选择弹窗 -->
+<div class="picker-overlay" id="timePicker">
+  <div class="picker-panel">
+    <div class="picker-title">选择推送时间</div>
+    <div class="time-scroll" id="timeScroll"></div>
+    <div class="picker-cancel" id="timeCancel">取消</div>
+  </div>
+</div>
 
-var allF = {
-  "白羊座":["今天白羊座精力充沛，适合主动出击迎接新挑战","主动表达心意容易获得回应","偏财运不错，有小惊喜","5, 9, 18","红色","10:00 - 12:00","签约 · 出行 · 健身","冲动消费 · 争吵","冲猴 · 煞北"],
-  "金牛座":["今天金牛座适合稳扎稳打，不宜冒进","感情稳定，适合和伴侣一起做些轻松的事","理财运不错，适合做财务规划","2, 6, 15","绿色","14:00 - 16:00","理财 · 学习 · 整理","投资 · 远行","冲鸡 · 煞西"],
-  "双子座":["今天双子座思维活跃，适合沟通交流和头脑风暴","社交场合魅力十足，容易吸引目光","有意外之财，但不宜大手大脚","4, 8, 21","黄色","09:00 - 11:00","社交 · 学习 · 创意","冲动决定 · 熬夜","冲狗 · 煞南"],
-  "巨蟹座":["今天巨蟹座情绪敏感，适合在家休息放松","适合和家人或伴侣共度温馨时光","消费欲望较强，注意控制预算","3, 7, 11","白色","19:00 - 21:00","居家 · 烹饪 · 陪伴","投资 · 社交","冲猪 · 煞东"],
-  "狮子座":["今天狮子座自信满满，适合展现自己的才华","魅力爆棚，容易吸引到欣赏的目光","事业运带动财运，有升职加薪机会","1, 5, 19","金色","11:00 - 13:00","演讲 · 展示 · 社交","低调行事 · 妥协","冲鼠 · 煞北"],
-  "处女座":["今天处女座适合处理细节工作，效率很高","对感情要求较高，适当放松会更愉快","适合整理账目，做好财务规划","6, 10, 22","蓝色","15:00 - 17:00","整理 · 分析 · 健康","冲动购物 · 熬夜","冲牛 · 煞西"],
-  "天秤座":["今天天秤座社交能量满满，适合与人合作或参加聚会，有机会遇到贵人","单身者魅力四射，容易吸引到欣赏你的人","开销较多，注意控制冲动消费","3, 7, 12","金色","09:00 - 11:00","嫁娶 · 开市 · 出行 · 会友","安葬 · 动土 · 祈福","冲虎 · 煞南"],
-  "天蝎座":["今天天蝎座洞察力敏锐，适合深入思考和解决问题","感情深刻，适合和伴侣进行深度交流","投资运不错，可以关注长期理财","8, 13, 20","紫色","16:00 - 18:00","研究 · 投资 · 思考","轻信他人 · 冲动","冲兔 · 煞东"],
-  "射手座":["今天射手座自由奔放，适合外出探索新鲜事物","桃花运不错，有机会遇到有趣的人","偏财运佳，但容易来得快去得也快","9, 14, 23","橙色","13:00 - 15:00","旅行 · 运动 · 社交","宅家 · 拖延","冲龙 · 煞南"],
-  "摩羯座":["今天摩羯座务实高效，适合推进工作计划","感情稳定务实，行动比语言更有说服力","正财运好，努力工作就有回报","4, 11, 17","深蓝","10:00 - 12:00","工作 · 签约 · 学习","冲动消费 · 熬夜","冲蛇 · 煞西"],
-  "水瓶座":["今天水瓶座创意十足，适合做一些与众不同的事情","独特的魅力吸引人，保持做自己就好","适合尝试新的赚钱方式","7, 12, 25","天蓝","20:00 - 22:00","创新 · 社交 · 学习","墨守成规 · 压抑","冲马 · 煞北"],
-  "双鱼座":["今天双鱼座感性浪漫，适合做创意和艺术相关的事","浪漫指数爆棚，适合约会或表白","容易为感性消费，注意理性购物","2, 9, 16","粉色","18:00 - 20:00","创作 · 约会 · 冥想","重大决策 · 冲动","冲羊 · 煞东"]
+<script>
+var zList=["白羊座","金牛座","双子座","巨蟹座","狮子座","处女座","天秤座","天蝎座","射手座","摩羯座","水瓶座","双鱼座"];
+var zEn={白羊座:"ARIES",金牛座:"TAURUS",双子座:"GEMINI",巨蟹座:"CANCER",狮子座:"LEO",处女座:"VIRGO",天秤座:"LIBRA",天蝎座:"SCORPIUS",射手座:"SAGITTARIUS",摩羯座:"CAPRICORN",水瓶座:"AQUARIUS",双鱼座:"PISCES"};
+var myZodiac="天秤座";var pushOn=true;var pushTime="7:30";var showLunar=true;
+
+var allF={
+白羊座:["今天白羊座精力充沛，适合主动出击迎接新挑战","主动表达心意容易获得回应","偏财运不错，有小惊喜","5, 9, 18","红色","10:00 - 12:00","签约 · 出行 · 健身","冲动消费 · 争吵","冲猴 · 煞北"],
+金牛座:["今天金牛座适合稳扎稳打，不宜冒进","感情稳定，适合和伴侣一起做些轻松的事","理财运不错，适合做财务规划","2, 6, 15","绿色","14:00 - 16:00","理财 · 学习 · 整理","投资 · 远行","冲鸡 · 煞西"],
+双子座:["今天双子座思维活跃，适合沟通交流和头脑风暴","社交场合魅力十足，容易吸引目光","有意外之财，但不宜大手大脚","4, 8, 21","黄色","09:00 - 11:00","社交 · 学习 · 创意","冲动决定 · 熬夜","冲狗 · 煞南"],
+巨蟹座:["今天巨蟹座情绪敏感，适合在家休息放松","适合和家人或伴侣共度温馨时光","消费欲望较强，注意控制预算","3, 7, 11","白色","19:00 - 21:00","居家 · 烹饪 · 陪伴","投资 · 社交","冲猪 · 煞东"],
+狮子座:["今天狮子座自信满满，适合展现自己的才华","魅力爆棚，容易吸引到欣赏的目光","事业运带动财运，有升职加薪机会","1, 5, 19","金色","11:00 - 13:00","演讲 · 展示 · 社交","低调行事 · 妥协","冲鼠 · 煞北"],
+处女座:["今天处女座适合处理细节工作，效率很高","对感情要求较高，适当放松会更愉快","适合整理账目，做好财务规划","6, 10, 22","蓝色","15:00 - 17:00","整理 · 分析 · 健康","冲动购物 · 熬夜","冲牛 · 煞西"],
+天秤座:["今天天秤座社交能量满满，适合与人合作或参加聚会，有机会遇到贵人","单身者魅力四射，容易吸引到欣赏你的人","开销较多，注意控制冲动消费","3, 7, 12","金色","09:00 - 11:00","嫁娶 · 开市 · 出行 · 会友","安葬 · 动土 · 祈福","冲虎 · 煞南"],
+天蝎座:["今天天蝎座洞察力敏锐，适合深入思考和解决问题","感情深刻，适合和伴侣进行深度交流","投资运不错，可以关注长期理财","8, 13, 20","紫色","16:00 - 18:00","研究 · 投资 · 思考","轻信他人 · 冲动","冲兔 · 煞东"],
+射手座:["今天射手座自由奔放，适合外出探索新鲜事物","桃花运不错，有机会遇到有趣的人","偏财运佳，但容易来得快去得也快","9, 14, 23","橙色","13:00 - 15:00","旅行 · 运动 · 社交","宅家 · 拖延","冲龙 · 煞南"],
+摩羯座:["今天摩羯座务实高效，适合推进工作计划","感情稳定务实，行动比语言更有说服力","正财运好，努力工作就有回报","4, 11, 17","深蓝","10:00 - 12:00","工作 · 签约 · 学习","冲动消费 · 熬夜","冲蛇 · 煞西"],
+水瓶座:["今天水瓶座创意十足，适合做一些与众不同的事情","独特的魅力吸引人，保持做自己就好","适合尝试新的赚钱方式","7, 12, 25","天蓝","20:00 - 22:00","创新 · 社交 · 学习","墨守成规 · 压抑","冲马 · 煞北"],
+双鱼座:["今天双鱼座感性浪漫，适合做创意和艺术相关的事","浪漫指数爆棚，适合约会或表白","容易为感性消费，注意理性购物","2, 9, 16","粉色","18:00 - 20:00","创作 · 约会 · 冥想","重大决策 · 冲动","冲羊 · 煞东"]
 };
 
-function $(id){return document.getElementById(id);}
+function $(i){return document.getElementById(i);}
+
+function updateClock(){var d=new Date();$("timeDisplay").innerHTML=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);}
 
 function renderToday(){
-  var d=new Date();
-  var w=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  var d=new Date(),w=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
   $("todayDate").innerHTML=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日 "+w[d.getDay()];
   $("lunarDate").innerHTML=showLunar?"农历五月初八":"";
   $("zodiacLabel").innerHTML="⚖️ "+myZodiac+" · "+zEn[myZodiac];
@@ -208,21 +216,16 @@ function renderWeek(){
   var w=["周日","周一","周二","周三","周四","周五","周六"];
   var a=[["整体运势不错，适合开始新计划","☀️"],["人际关系良好，沟通顺畅","☀️"],["注意调整状态，适合休息","⛅"],["运势平稳，适合处理日常事务","🌥️"],["社交运回升，适合聚会交流","☀️"],["心情愉悦，适合外出活动","☀️"],["今天精力充沛，适合主动出击","☀️"]];
   var h="";
-  for(var i=0;i<7;i++){
-    var d2=new Date();d2.setDate(d2.getDate()-(6-i));
-    var t=(i===6);var dw=d2.getDay();
-    h+='<div class="day-card'+(t?" today":"")+'"><div class="dayname"><div class="weekday">'+(t?"今天":w[dw])+'</div><div class="date-num">'+(d2.getMonth()+1)+"/"+d2.getDate()+'</div></div><div class="summary">'+a[i][0]+'</div><div class="trend">'+a[i][1]+'</div></div>';
-  }
+  for(var i=0;i<7;i++){var d2=new Date();d2.setDate(d2.getDate()-(6-i));var t=(i===6);var dw=d2.getDay();h+='<div class="day-card'+(t?" today":"")+'"><div class="dayname"><div class="weekday">'+(t?"今天":w[dw])+'</div><div class="date-num">'+(d2.getMonth()+1)+"/"+d2.getDate()+'</div></div><div class="summary">'+a[i][0]+'</div><div class="trend">'+a[i][1]+'</div></div>';}
   $("weekList").innerHTML=h;
-  $("weekSummary").innerHTML="过去一周"+myZodiac+"整体运势平稳，注意把握社交机会";
+  $("weekSummary").innerHTML="过去一周"+myZodiac+"整体运势平稳";
 }
 
 function switchPage(p){
   var ps=document.querySelectorAll(".page"),ns=document.querySelectorAll(".nav-item");
   for(var i=0;i<ps.length;i++)ps[i].className=ps[i].className.replace(" active","");
   for(var i=0;i<ns.length;i++)ns[i].className=ns[i].className.replace(" active","");
-  $("page-"+p).className+=" active";
-  document.querySelector('[data-page="'+p+'"]').className+=" active";
+  $("page-"+p).className+=" active";document.querySelector('[data-page="'+p+'"]').className+=" active";
 }
 
 function loadSettings(){
@@ -233,88 +236,46 @@ function loadSettings(){
   $("zodiacName").innerHTML=myZodiac+" ▸";
 }
 
-function saveSettings(){
-  try{localStorage.setItem("fortune_settings",JSON.stringify({z:myZodiac,p:pushOn,t:pushTime,l:showLunar}));}catch(e){}
+function saveSettings(){try{localStorage.setItem("fortune_settings",JSON.stringify({z:myZodiac,p:pushOn,t:pushTime,l:showLunar}));}catch(e){}}
+
+// 星座选择器
+function openZodiacPicker(){
+  var g=$("pickerGrid"),h="";
+  for(var i=0;i<zList.length;i++){var z=zList[i],s=(z===myZodiac)?" sel":"";h+='<div class="picker-item'+s+'" data-v="'+z+'">'+z+'</div>';}
+  g.innerHTML=h;$("zodiacPicker").style.display="flex";
+  var its=g.querySelectorAll(".picker-item");
+  for(var i=0;i<its.length;i++){its[i].onclick=function(){myZodiac=this.getAttribute("data-v");$("zodiacName").innerHTML=myZodiac+" ▸";$("zodiacPicker").style.display="none";saveSettings();renderToday();};}
 }
 
-function openPicker(){
-  if(pickerOpen)return;
-  pickerOpen=true;
-  var g=$("pickerGrid"),h="";
-  for(var i=0;i<zList.length;i++){
-    var z=zList[i],s=(z===myZodiac)?" sel":"";
-    h+='<div class="picker-item'+s+'" data-z="'+z+'">'+z+'</div>';
-  }
-  g.innerHTML=h;
-  $("zodiacPicker").style.display="flex";
-  var items=g.querySelectorAll(".picker-item");
-  for(var i=0;i<items.length;i++){
-    items[i].onclick=function(){
-      myZodiac=this.getAttribute("data-z");
-      $("zodiacName").innerHTML=myZodiac+" ▸";
-      pickerOpen=false;
-      $("zodiacPicker").style.display="none";
-      saveSettings();
-      renderToday();
-    };
-  }
+// 时间选择器
+function openTimePicker(){
+  var ts=[];
+  for(var hh=5;hh<=12;hh++){ts.push(("0"+hh).slice(-2)+":00");ts.push(("0"+hh).slice(-2)+":30");}
+  ts.push("13:00");ts.push("13:30");ts.push("14:00");
+  var g=$("timeScroll"),h="";
+  for(var i=0;i<ts.length;i++){var t=ts[i],s=(t===pushTime)?" sel":"";h+='<div class="time-opt'+s+'" data-v="'+t+'">'+t+'</div>';}
+  g.innerHTML=h;$("timePicker").style.display="flex";
+  var its=g.querySelectorAll(".time-opt");
+  for(var i=0;i<its.length;i++){its[i].onclick=function(){pushTime=this.getAttribute("data-v");$("pushTimeDisplay").innerHTML=pushTime+" ▸";$("timePicker").style.display="none";saveSettings();};}
 }
 
 function init(){
   updateClock();setInterval(updateClock,60000);
   loadSettings();renderToday();renderWeek();
-
   var ns=document.querySelectorAll(".nav-item");
   for(var i=0;i<ns.length;i++)ns[i].onclick=function(){switchPage(this.getAttribute("data-page"));};
-
   $("pushToggle").onclick=function(){pushOn=!pushOn;this.className=pushOn?"toggle on":"toggle";saveSettings();};
   $("lunarToggle").onclick=function(){showLunar=!showLunar;this.className=showLunar?"toggle on":"toggle";saveSettings();renderToday();};
   $("pushTimeDisplay").onclick=openTimePicker;
-  $("zodiacSetting").onclick=openPicker;
+  $("zodiacSetting").onclick=openZodiacPicker;
   $("dataSourceItem").onclick=function(){alert("📡 数据来源\n\n所有数据来自公开免费 API：\n1. 天行数据 (tianapi.com)\n2. 香港天文台 (hko.gov.hk)\n\n可在对应网站查证数据真实性");};
-  $("pickerCancel").onclick=function(){pickerOpen=false;$("zodiacPicker").style.display="none";};
-  $("zodiacPicker").onclick=function(e){if(e.target===this){pickerOpen=false;this.style.display="none";}};
+  $("pickerCancel").onclick=function(){$("zodiacPicker").style.display="none";};
+  $("zodiacPicker").onclick=function(e){if(e.target===this)this.style.display="none";};
+  $("timeCancel").onclick=function(){$("timePicker").style.display="none";};
+  $("timePicker").onclick=function(e){if(e.target===this)this.style.display="none";};
 }
 
-function updateClock(){
-  var d=new Date();
-  $("timeDisplay").innerHTML=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
-}
-
-function openTimePicker(){
-  var g=timeList,h="";
-  var times=[];
-  for(var hh=5;hh<=12;hh++){times.push(("0"+hh).slice(-2)+":00");times.push(("0"+hh).slice(-2)+":30");}
-  times.push("13:00");times.push("13:30");times.push("14:00");
-  for(var i=0;i<times.length;i++){
-    var t=times[i],s=(t===pushTime)?" sel":"";
-    h+='<div class="time-option'+s+'" data-t="'+t+'">'+t+'</div>';
-  }
-  g.innerHTML=h;
-  timePicker.style.display="flex";
-  var opts=g.querySelectorAll(".time-option");
-  for(var i=0;i<opts.length;i++){
-    opts[i].onclick=function(){
-      pushTime=this.getAttribute("data-t");
-      pushTimeDisplay.innerHTML=pushTime+" ▸";
-      timePicker.style.display="none";
-      saveSettings();
-    };
-  }
-}
-
-timeCancel.onclick=function(){timePicker.style.display="none";};
-timePicker.onclick=function(e){if(e.target===this)this.style.display="none";};window.onload=init;</script>
-
-<!-- 时间选择弹窗 -->
-<div class="picker-overlay" id="timePicker">
-  <div class="picker-panel">
-    <div class="picker-title">选择推送时间</div>
-    <div class="time-scroll-wrap">
-      <div class="time-list" id="timeList"></div>
-    </div>
-    <div class="picker-cancel" id="timeCancel">取消</div>
-  </div>
-</div>
+window.onload=init;
+</script>
 </body>
 </html>
