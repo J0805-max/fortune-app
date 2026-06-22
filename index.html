@@ -304,7 +304,9 @@ function openTimePicker(){
 }
 
 timeCancel.onclick=function(){timePicker.style.display="none";};
-timePicker.onclick=function(e){if(e.target===this)this.style.display="none";};window.onload=init;
+timePicker.onclick=function(e){if(e.target===this)this.style.display="none";};window.onload=init;</script>
+
+<!-- 时间选择弹窗 -->
 <div class="picker-overlay" id="timePicker">
   <div class="picker-panel">
     <div class="picker-title">选择推送时间</div>
@@ -314,6 +316,5 @@ timePicker.onclick=function(e){if(e.target===this)this.style.display="none";};wi
     <div class="picker-cancel" id="timeCancel">取消</div>
   </div>
 </div>
-</script>
 </body>
 </html>
